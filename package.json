@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@headlessui/vue": "^1.7.2",
+    "axios": "^0.27.2",
     "install": "^0.13.0",
     "keen-slider": "^6.8.1",
     "phosphor-vue": "^4.4.0",
