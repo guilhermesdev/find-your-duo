@@ -10,7 +10,6 @@
 			está aqui
 		</h1>
 
-		<!-- class="grid grid-cols-3 md:grid-cols-6 gap-6 mt-16 keen-slider" -->
 		<ul class="keen-slider mt-16" ref="gamesSlider">
 			<!-- TODO: alterar de `li` para `router-link` quando o Vue Router estiver instalado -->
 			<GameCard v-for="game in games" :key="`game-card:${game.id}`" as="li" :name="game.title"
@@ -50,12 +49,13 @@ const ResizePlugin = (slider: any) => {
 	slider.on('created', () => {
 		observer.observe(slider.container);
 	});
+
 	slider.on('destroyed', () => {
 		observer.unobserve(slider.container);
 	});
 };
 
-const [gamesSlider, slider] = useKeenSlider(
+const [gamesSlider] = useKeenSlider(
 	{
 		loop: true,
 		drag: true,
