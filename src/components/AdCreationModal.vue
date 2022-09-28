@@ -47,10 +47,10 @@
                     <div class="relative mt-1">
                       <div>
                         <ComboboxInput
+                          v-validation="[!!selectedGameId, 'Selecione um game']"
                           class="w-full bg-zinc-900 text-white text-sm placeholder:text-zinc-500 px-3 py-4 rounded-[0.25rem]"
-                          :display-value="gameId => gameNamesById[gameId as string] || 'Selecione o game que deseja jogar'"
+                          :display-value="(gameId: any) => gameNamesById[gameId] || 'Selecione o game que deseja jogar'"
                           @change="handleGameSelectionChange"
-                          :ref="el => setGameSelectionValidation(el as ComponentPublicInstance)"
                         />
                         <ComboboxButton
                           class="absolute inset-y-0 right-0 flex items-center"
@@ -155,11 +155,14 @@
                       <input
                         type="checkbox"
                         v-model="weekDaysPlaying"
+                        v-validation="[
+                          weekDaysPlaying.length > 0,
+                          'Marque ao menos um dia da semana',
+                        ]"
                         class="appearance-none w-full h-full rounded-md bg-zinc-900 checked:bg-violet-500 text-white cursor-pointer"
                         :value="day.value"
                         :text="day.text"
                         :id="`week-day-checkbox:${day.value}`"
-                        :ref="(el) => setWeekDaysValidation(el as HTMLInputElement)"
                       />
                       <span
                         class="absolute transform top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-base font-bold leading-[26px] tracking-[-0.18px]"
@@ -245,7 +248,7 @@
 </template>
 
 <script setup lang="ts">
-import { ComponentPublicInstance, computed, reactive, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import {
   TransitionRoot,
   TransitionChild,
@@ -265,6 +268,16 @@ import InputField from "@/components/InputField.vue";
 import TimeInput from "@/components/TimeInput.vue";
 import { api } from "@/services/api";
 
+const vValidation = {
+  updated(el: HTMLInputElement, binding: { value: [boolean, string] }) {
+    const [isValid, errorMessage] = binding.value;
+
+    const message = isValid ? "" : errorMessage;
+
+    el.setCustomValidity(message);
+  },
+};
+
 const props = withDefaults(
   defineProps<{ modelValue: boolean; games?: Game[] }>(),
   {
@@ -276,22 +289,7 @@ const emit = defineEmits<{
   (e: "update:modelValue", value: boolean): void;
 }>();
 
-const customValidations = reactive({
-  gameSelection: {
-    isDone: false,
-    removeWatcher: () => {},
-  },
-  weekDays: {
-    isDone: false,
-    removeWatcher: () => {},
-  },
-});
-
 function closeModal() {
-  Object.values(customValidations).forEach((validation) =>
-    validation.removeWatcher()
-  );
-
   emit("update:modelValue", false);
 }
 
@@ -335,29 +333,6 @@ function handleGameSelectionChange(e: Event & { target: HTMLInputElement }) {
   gameTextQuery.value = e.target.value;
 }
 
-function setGameSelectionValidation(
-  inputComponent: ComponentPublicInstance | null
-) {
-  const input: HTMLInputElement | null = inputComponent?.$el;
-
-  if (customValidations.gameSelection.isDone || !input) return;
-
-  const errorMessage = "Selecione um game";
-
-  input.setCustomValidity(errorMessage);
-
-  customValidations.gameSelection.removeWatcher = watch(
-    selectedGameId,
-    (gameId) => {
-      const message = gameId ? "" : errorMessage;
-
-      input.setCustomValidity(message);
-    }
-  );
-
-  customValidations.gameSelection.isDone = true;
-}
-
 interface WeekDayOption {
   text: string;
   name: string;
@@ -373,26 +348,6 @@ const weekDaysOptions: WeekDayOption[] = [
   { text: "S", name: "Sexta", value: 5 },
   { text: "S", name: "Sábado", value: 6 },
 ];
-
-function setWeekDaysValidation(checkbox: HTMLInputElement) {
-  if (
-    customValidations.weekDays.isDone ||
-    +checkbox.value !== weekDaysOptions[0].value
-  )
-    return;
-
-  customValidations.weekDays.removeWatcher = watch(weekDaysPlaying, (value) => {
-    const atLeastOneWeekDayWasSelected = value.length > 0;
-
-    const message = atLeastOneWeekDayWasSelected
-      ? ""
-      : "Marque ao menos um dia da semana";
-
-    checkbox.setCustomValidity(message);
-  });
-
-  customValidations.weekDays.isDone = true;
-}
 
 const weekDaysPlaying = ref<WeekDayOption[]>([]);
 const useVoiceChannel = ref(false);
