@@ -24,7 +24,7 @@ interface GameCardProps {
 }
 
 withDefaults(defineProps<GameCardProps>(), {
-  as: "div",
+	as: 'div',
 });
 </script>
 
