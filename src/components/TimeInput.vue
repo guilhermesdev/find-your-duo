@@ -8,14 +8,14 @@
 </template>
 
 <script setup lang="ts">
-import VInput from "@/components/VInput.vue";
+import VInput from '@/components/VInput.vue';
 
 defineProps<{ modelValue: string }>();
-defineEmits<{ (e: "update:modelValue"): void }>();
+defineEmits<{ (e: 'update:modelValue'): void }>();
 
 function handleTimeInputFocus(e: Event) {
-  const input = e.target as HTMLInputElement;
+	const input = e.target as HTMLInputElement;
 
-  input.showPicker();
+	input.showPicker();
 }
 </script>

@@ -1,4 +1,4 @@
-import { AxiosInstance } from "axios";
+import { AxiosInstance } from 'axios';
 
 interface createAdParams {
 	gameId: string,
@@ -15,4 +15,4 @@ export const getAdsRepository = (apiClient: AxiosInstance) => ({
 	create(params: createAdParams) {
 		return apiClient.post('/ads', params);
 	}
-})
+});

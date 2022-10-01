@@ -27,14 +27,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { PhMagnifyingGlassPlus } from "phosphor-vue";
+import { ref } from 'vue';
+import { PhMagnifyingGlassPlus } from 'phosphor-vue';
 
-import AdCreationModal from "@/components/AdCreationModal.vue";
+import AdCreationModal from '@/components/AdCreationModal.vue';
 
 const isAdCreationModalOpen = ref(false);
 
 function openAdCreationModal() {
-  isAdCreationModalOpen.value = true;
+	isAdCreationModalOpen.value = true;
 }
 </script>

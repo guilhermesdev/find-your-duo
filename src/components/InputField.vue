@@ -18,17 +18,17 @@
 </template>
 
 <script setup lang="ts">
-import VInput from "@/components/VInput.vue";
+import VInput from '@/components/VInput.vue';
 
 withDefaults(
-  defineProps<{
+	defineProps<{
     label: string;
     inputClass?: string;
     inputPlaceholder?: string;
     inputType?: string;
   }>(),
-  { inputType: "text" }
+	{ inputType: 'text' }
 );
 
-const id = "input-field-" + Math.random().toString(26);
+const id = 'input-field-' + Math.random().toString(26);
 </script>
